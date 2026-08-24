@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
-        "build": "next build",
+        "build": "dotenv -e .env.local next build",
         "start": "next start"
     },
     "dependencies": {
@@ -39,6 +39,7 @@
         "@types/react-slick": "^0.23.13",
         "autoprefixer": "^10.5.4",
         "babel-plugin-react-compiler": "1.0.0",
+        "dotenv-cli": "^11.0.0",
         "postcss": "^8.5.26",
         "tailwindcss": "^4.3.3",
         "typescript": "^5"
