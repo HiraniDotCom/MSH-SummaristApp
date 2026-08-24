@@ -15,7 +15,7 @@ import {
 } from "firebase/firestore";
 import { useState } from "react";
 import { FiCheckCircle } from "react-icons/fi";
-import PlayerSkeleton from "@/components/PlayerSkeleton";
+import PlayerSkeleton from "@/app/components/PlayerSkeleton";
 
 export default function PlayerPage() {
     const { textSize } = useTextSize();

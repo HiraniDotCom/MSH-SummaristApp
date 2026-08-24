@@ -93,8 +93,10 @@ export default function Footer() {
         } catch (err) {
             console.error("❌ Firestore transaction write failed:", err);
             isFinishedSavedRef.current = false;
+        }
     };
 
+    // Component-level early return if book data isn't loaded yet
     if (!book) return null;
 
     const formatTime = (time: number) => {
@@ -162,6 +164,7 @@ export default function Footer() {
     return (
         <footer className="fixed bottom-0 left-0 w-full bg-gray-900 text-white shadow-lg z-50">
             <div className="flex flex-col md:flex-row items-center justify-between px-4 py-3">
+                {/* Book Details (Left Side) */}
                 <div className="flex mb-4 md:mb-0">
                     <img
                         src={book.imageLink}
@@ -172,15 +175,16 @@ export default function Footer() {
                         <p className="font-semibold line-clamp-1">
                             {book.title}
                         </p>
-                        <p className="text-gray-300 text-xs line-clamp-1">
+                        <p className="text-gray-400 text-xs line-clamp-1">
                             {book.author}
                         </p>
                     </div>
                 </div>
 
+                {/* Audio Controls (Middle) */}
                 <div className="flex items-center gap-5">
                     <button onClick={rewind10} className="cursor-pointer">
-                        <TbRewindBackward10 className="w-8 h-8 text-gray-300 hover:text-white" />
+                        <TbRewindBackward10 className="w-8 h-8 hover:text-gray-300 text-white" />
                     </button>
                     <button onClick={togglePlay} className="cursor-pointer">
                         {isPlaying ? (
@@ -190,10 +194,9 @@ export default function Footer() {
                         )}
                     </button>
                     <button onClick={forward10} className="cursor-pointer">
-                        <TbRewindForward10 className="w-8 h-8 text-gray-300 hover:text-white" />
+                        <TbRewindForward10 className="w-8 h-8 hover:text-gray-300 text-white" />
                     </button>
 
-                    {/* ✅ 3. Bound native event properties directly to the element */}
                     <audio
                         ref={audioRef}
                         src={book.audioLink}
@@ -208,8 +211,9 @@ export default function Footer() {
                     />
                 </div>
 
+                {/* Progress Bar (Right Side) */}
                 <div className="flex items-center w-full md:w-100 gap-2 mt-4 md:mt-0">
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-white">
                         {formatTime(currentTime)}
                     </span>
                     <input
@@ -218,9 +222,9 @@ export default function Footer() {
                         max={duration || 0}
                         value={currentTime}
                         onChange={handleSeek}
-                        className="w-full accent-blue-500 cursor-pointer h-1 bg-gray-700 rounded-lg appearance-none"
+                        className="w-full accent-blue-500 cursor-pointer h-1 bg-white rounded-lg appearance-none"
                     />
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-white">
                         {formatTime(duration)}
                     </span>
                 </div>

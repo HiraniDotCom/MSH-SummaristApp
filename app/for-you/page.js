@@ -4,9 +4,10 @@ import "../globals.css";
 import { useAuth } from "@/app/context/AuthContext";
 import { useBooks } from "@/app/context/BookContext";
 import { useSidebar } from "../context/SidebarContext";
-import BookCarousel from "@/components/BookCarousel";
+import BookCarousel from "@/app/components/BookCarousel";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 function SkeletonCard() {
   return (
@@ -31,6 +32,14 @@ export default function ForYouPage() {
   const { loading, error, selectedBook, recommendedBooks, suggestedBooks } = useBooks();
   const { isOpen, open, close, toggle } = useSidebar();
   const router = useRouter();
+
+      if (!user) {
+        return (
+        <div className="font-bold text-red-500 animate-pulse"> You need to sign in for access to the For You page
+            <Link href={'/login'} className="bg-blue-600 text-white p-2 rounded-2xl ml-4">Sign Me In</Link>
+        </div>
+    );
+}
 
   if (error) return <div className="p-6 text-red-600">Error: {error}</div>;
 

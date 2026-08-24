@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import FAQList from '../components/FAQList';
+import FAQList from '@/app/components/FAQList';
 
 export default function Home() {
   const faqs = [

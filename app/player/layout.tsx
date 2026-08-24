@@ -2,11 +2,11 @@
 
 import { Roboto, Roboto_Condensed } from "next/font/google";
 import "@/app/globals.css";
-import Sidebar from "@/components/Sidebar";
-import Header from "@/components/Header";
+import Sidebar from "@/app/components/Sidebar";
+import Header from "@/app/components/Header";
 import { SidebarProvider, useSidebar } from "../context/SidebarContext";
 import { TextSizeProvider } from "../context/TextSizeContext";
-import Player from '@/components/Player';
+import Player from '@/app/components/Player';
 import clsx from "clsx";
 
 const robotoSans = Roboto({

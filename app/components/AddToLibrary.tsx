@@ -3,7 +3,6 @@
 import { auth, db } from "@/app/lib/firebase";
 import { doc, deleteDoc, onSnapshot, writeBatch, getDoc, collection, getDocs } from "firebase/firestore";
 import { useState, useEffect } from "react";
-import LibrarySkeleton from '@/components/LibrarySkeleton';
 
 interface Book {
   id: string;

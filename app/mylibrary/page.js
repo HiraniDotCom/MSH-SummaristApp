@@ -16,7 +16,7 @@ import { MdOutlineStarBorder } from "react-icons/md";
 import { FiClock, FiCheckCircle, FiBookOpen } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
-import AudioDuration from "@/components/AudioDuration";
+import AudioDuration from "@/app/components/AudioDuration";
 
 export default function MyLibraryPage() {
     const [firestoreBooks, setFirestoreBooks] = useState([]);
@@ -31,6 +31,14 @@ export default function MyLibraryPage() {
         suggestedBooks = [],
     } = useBooks();
     const pathname = usePathname();
+    
+    if (!user) {
+        return (
+        <div className="font-bold text-red-500 animate-pulse"> You need to sign in for access to the My Library page
+            <Link href={'/login'} className="bg-blue-600 text-white p-2 rounded-2xl ml-4">Sign Me In</Link>
+        </div>
+    );
+}
 
     useEffect(() => {
         if (!user || !user.email) return;

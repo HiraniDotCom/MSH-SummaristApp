@@ -8,10 +8,10 @@ import { HiOutlineLightBulb } from "react-icons/hi";
 import { useParams } from "next/navigation";
 import { useSidebar } from "../../../context/SidebarContext";
 import clsx from "clsx";
-import AddToLibrary from "@/components/AddToLibrary";
+import AddToLibrary from "@/app/components/AddToLibrary";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
-import AudioDuration from "@/components/AudioDuration";
+import AudioDuration from "@/app/components/AudioDuration";
 
 export default function BookPage() {
     const { isOpen } = useSidebar();

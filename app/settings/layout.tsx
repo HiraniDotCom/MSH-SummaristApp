@@ -2,8 +2,8 @@
 
 import { Roboto, Roboto_Condensed } from "next/font/google";
 import "@/app/globals.css";
-import Sidebar from "@/components/Sidebar";
-import Header from "@/components/Header";
+import Sidebar from "@/app/components/Sidebar";
+import Header from "@/app/components/Header";
 import { SidebarProvider, useSidebar } from "../context/SidebarContext";
 import clsx from "clsx";
 

@@ -32,8 +32,7 @@ export default function Sidebar() {
                 await logout();
             }
             sessionStorage.setItem("explicitly_logged_out", "true");
-            router.refresh();
-            router.push("/");
+            window.location.href = '/';
         } catch (error) {
             console.error("Logout failed:", error);
         }
@@ -130,12 +129,18 @@ export default function Sidebar() {
                             <MdOutlineHelpOutline className="inline text-2xl" />{" "}
                             Help & Support
                         </a>
-                        <button
+                        {user ? (<button
                             onClick={handleLogoutClick}
                             className="block hover:bg-gray-400 p-2 rounded"
                         >
                             <IoExitOutline className="inline" /> Log Out
-                        </button>
+                        </button>) : (<a
+                            href="/login"
+                            className="block hover:bg-gray-400 p-2 rounded"
+                        >
+                            <IoExitOutline className="inline" /> Log In
+                        </a>)}
+                        
                     </div>
                 </nav>
             </aside>

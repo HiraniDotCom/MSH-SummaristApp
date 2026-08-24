@@ -2,8 +2,8 @@
 
 import { Roboto, Roboto_Condensed } from "next/font/google";
 import "@/app/globals.css";
-import Sidebar from "@/components/Sidebar";
-import Header from "@/components/Header";
+import Sidebar from "@/app/components/Sidebar";
+import Header from "@/app/components/Header";
 import { SidebarProvider, useSidebar } from "../context/SidebarContext";
 import clsx from "clsx";
 import { AuthProvider } from "@/app/context/AuthContext";
@@ -30,14 +30,16 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             <div
                 className={clsx(
                     "flex flex-col flex-1 transition-all duration-300",
-                    isOpen ? "ml-56" : "ml-0"
+                    isOpen ? "ml-56" : "ml-0",
                 )}
             >
                 <div>
-                {/* Header */}
-                <Header />
-                {/* Scrollable content */}
-                <main className="flex-1 overflow-y-auto p-4 lg:ml-56">{children}</main>
+                    {/* Header */}
+                    <Header />
+                    {/* Scrollable content */}
+                    <main className="flex-1 overflow-y-auto p-4 lg:ml-56">
+                        {children}
+                    </main>
                 </div>
             </div>
         </div>
@@ -48,8 +50,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <SidebarProvider>
             <AuthProvider>
-            <LayoutContent>{children}</LayoutContent>
-        </AuthProvider>
+                    <LayoutContent>{children}</LayoutContent>
+            </AuthProvider>
         </SidebarProvider>
     );
 }

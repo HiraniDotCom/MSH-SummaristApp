@@ -3,7 +3,7 @@
 import { MdOutlineMenu, MdArrowBackIosNew } from "react-icons/md";
 import { FiClock } from "react-icons/fi";
 import { HiMagnifyingGlass } from "react-icons/hi2";
-import "../app/globals.css";
+import "@/app/globals.css";
 import { useSidebar } from "@/app/context/SidebarContext";
 import { useState, useRef, useEffect } from "react";
 import { useBooks } from "@/app/context/BookContext";

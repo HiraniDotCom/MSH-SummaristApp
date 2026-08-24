@@ -4,10 +4,21 @@ import React from "react";
 import { IoDocumentTextSharp } from "react-icons/io5";
 import { RiPlantFill } from "react-icons/ri";
 import { FaHandshake } from "react-icons/fa";
-import PlanSelector from "@/components/PlanSelector";
-import FAQData from "@/components/FAQData";
+import PlanSelector from "@/app/components/PlanSelector";
+import FAQData from "@/app/components/FAQData";
+import { useAuth } from "../context/AuthContext";
+import Link from "next/link";
 
 export default function Page(): React.ReactElement {
+  const { user } = useAuth();
+  
+      if (!user) {
+          return (
+          <div className="font-bold text-red-500 animate-pulse"> You need to sign in before you choose a subscription plan.
+              <Link href={'/login'} className="bg-blue-600 text-white p-2 rounded-2xl ml-4">Sign Me In</Link>
+          </div>
+      );
+  }
   return (
     <div>
       <div className="bg-blue-900 text-white max-w-250 h-auto m-auto pt-8 sm:rounded-bl-[100%] sm:rounded-br-[100%]">
