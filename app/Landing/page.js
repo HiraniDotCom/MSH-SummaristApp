@@ -1,4 +1,5 @@
 import "../style.css";
+import "../globals.css";
 import { AiFillFileText, AiFillBulb, AiFillAudio } from "react-icons/ai";
 import { BsStarFill, BsStarHalf } from "react-icons/bs";
 import { BiCrown } from "react-icons/bi";
@@ -219,7 +220,7 @@ export default function Home() {
                                 <div className="review__header">
                                     <div className="review__name">Hanna M.</div>
                                     <div className="review__stars">
-                                        <BsStarFill />
+                                        <BsStarFill /><BsStarFill /><BsStarFill /><BsStarFill /><BsStarFill />
                                     </div>
                                 </div>
                                 <div className="review__body">
@@ -233,7 +234,7 @@ export default function Home() {
                                 <div className="review__header">
                                     <div className="review__name">David B.</div>
                                     <div className="review__stars">
-                                        <BsStarFill />
+                                        <BsStarFill /><BsStarFill /><BsStarFill /><BsStarFill /><BsStarFill />
                                     </div>
                                 </div>
                                 <div className="review__body">
@@ -249,7 +250,7 @@ export default function Home() {
                                         Nathan S.
                                     </div>
                                     <div className="review__stars">
-                                        <BsStarFill />
+                                        <BsStarFill /><BsStarFill /><BsStarFill /><BsStarFill /><BsStarFill />
                                     </div>
                                 </div>
                                 <div className="review__body">
@@ -267,7 +268,7 @@ export default function Home() {
                                 <div className="review__header">
                                     <div className="review__name">Ryan R.</div>
                                     <div className="review__stars">
-                                        <BsStarFill />
+                                        <BsStarFill /><BsStarFill /><BsStarFill /><BsStarFill /><BsStarFill />
                                     </div>
                                 </div>
                                 <div className="review__body">

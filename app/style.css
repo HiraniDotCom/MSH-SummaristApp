@@ -47,8 +47,14 @@ button:disabled {
 }
 
 .container {
-  padding: 40px 0;
   width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1070px;
+  margin: 0 auto;
+  padding: 40px 24px;
 }
 
 .btn {
@@ -295,6 +301,12 @@ button:disabled {
 .statistics__content--header .statistics__heading:nth-child(6) { animation-delay: 10s; }
 
 /* REVIEWS */
+
+#reviews .container {
+  display: flex;
+  flex-direction: column;
+}
+
 .reviews__wrapper {
   max-width: 600px;
   margin: 0 auto;
@@ -398,6 +410,7 @@ button:disabled {
 
 .footer__block {
   z-index: 1;
+  max-width: 1070px;
 }
 
 .footer__link--title {

@@ -16,6 +16,7 @@ import {
 import { useState } from "react";
 import { FiCheckCircle } from "react-icons/fi";
 import PlayerSkeleton from "@/app/components/PlayerSkeleton";
+import StringToParagraphFull from '@/app/components/StringToParagraphFull';
 
 export default function PlayerPage() {
     const { textSize } = useTextSize();
@@ -75,15 +76,6 @@ export default function PlayerPage() {
         }
     };
 
-    const paragraphs = book.summary
-              .split(/(?<=[.?!])\s+(?=[A-Z])/g)
-              .map((p: string ) => p.trim())
-              .filter(Boolean);
-
-        if (!book) {
-        return <p className="p-6 text-red-600">Book Not Found.</p>;
-    }
-
     if (loading) {
         return <PlayerSkeleton />;
     }
@@ -107,12 +99,8 @@ export default function PlayerPage() {
                 <div className="border-b border-gray-200 mb-6"></div>
 
                 {/* Content Paragraph Block Rendering */}
-                <div
-                    className={`${textSize} block p-2 rounded text-gray-800 leading-relaxed space-y-4`}
-                >
-                    {paragraphs.map((p: string, idx: number) => (
-                        <p key={idx}>{p}</p>
-                    ))}
+                <div>
+                    <StringToParagraphFull text={book.summary} />
                 </div>
             </div>
             <div className="flex justify-center">

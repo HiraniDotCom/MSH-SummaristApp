@@ -96,7 +96,6 @@ export default function Footer() {
         }
     };
 
-    // Component-level early return if book data isn't loaded yet
     if (!book) return null;
 
     const formatTime = (time: number) => {
@@ -222,7 +221,14 @@ export default function Footer() {
                         max={duration || 0}
                         value={currentTime}
                         onChange={handleSeek}
-                        className="w-full accent-blue-500 cursor-pointer h-1 bg-white rounded-lg appearance-none"
+                        className="w-full cursor-pointer h-1 rounded-lg appearance-none accent-blue-400"
+                        style={{
+                            background: `linear-gradient(to right, #d1d5db 0%, #60a5fa ${
+                                duration ? (currentTime / duration) * 100 : 0
+                            }%, #ffffff ${
+                                duration ? (currentTime / duration) * 100 : 0
+                            }%, #ffffff 100%)`,
+                        }}
                     />
                     <span className="text-xs text-white">
                         {formatTime(duration)}

@@ -12,7 +12,7 @@ import {
 } from "firebase/firestore";
 import { useBooks } from "@/app/context/BookContext";
 import Link from "next/link";
-import { MdOutlineStarBorder } from "react-icons/md";
+import { MdOutlineStarBorder, MdOutlineLock } from "react-icons/md";
 import { FiClock, FiCheckCircle, FiBookOpen } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
@@ -22,8 +22,7 @@ export default function MyLibraryPage() {
     const [firestoreBooks, setFirestoreBooks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("learning");
-
-    const { user } = useAuth();
+    const { user, authLoading } = useAuth();
     const router = useRouter();
     const {
         selectedBook = [],
@@ -31,14 +30,14 @@ export default function MyLibraryPage() {
         suggestedBooks = [],
     } = useBooks();
     const pathname = usePathname();
-    
-    if (!user) {
-        return (
-        <div className="font-bold text-red-500 animate-pulse"> You need to sign in for access to the My Library page
-            <Link href={'/login'} className="bg-blue-600 text-white p-2 rounded-2xl ml-4">Sign Me In</Link>
-        </div>
-    );
-}
+    const hasAccess =
+        user &&
+        user.subscribed &&
+        ["Premium", "Premium Plus"].includes(user.subscribed);
+    const learningBooks = firestoreBooks.filter((b) => !b.finished);
+    const finishedBooks = firestoreBooks.filter((b) => b.finished);
+    const currentBooksToDisplay =
+        activeTab === "learning" ? learningBooks : finishedBooks;
 
     useEffect(() => {
         if (!user || !user.email) return;
@@ -95,23 +94,41 @@ export default function MyLibraryPage() {
         };
     }, [user]);
 
-    const hasAccess =
-        user &&
-        user.subscribed &&
-        ["Premium", "Premium Plus"].includes(user.subscribed);
-
     useEffect(() => {
-        if (user === null) {
+        if (authLoading) return;
+        if (!user) {
             setLoading(false);
+            return;
         }
-        if (!loading && !hasAccess) {
-            router.replace(
-                `/choose-plan?redirectTo=${encodeURIComponent(pathname)}`,
-            );
+        if (!loading) {
+            if (!hasAccess) {
+                router.replace(
+                    `/choose-plan?redirectTo=${encodeURIComponent(pathname)}`,
+                );
+            }
         }
-    }, [hasAccess, loading, router, user]);
+    }, [hasAccess, loading, authLoading, router, user, pathname]);
 
-    if (loading) {
+    if (!user) {
+        return (
+            <div className=" w-auto min-h-screen flex flex-col min-w-0">
+                <div className="flex flex-col justify-center gap-4 w-full">
+                    <img className="mx-auto w-3/4" src="/login.png" alt="" />
+                    <h1 className="text-center font-bold text-3xl">
+                        Log in to your account to enter Your Library
+                    </h1>
+                    <a
+                        href="/login"
+                        className="bg-blue-500 text-white p-2 rounded-2xl cursor-pointer w-56 animate-pulse text-center m-auto"
+                    >
+                        Login
+                    </a>
+                </div>
+            </div>
+        );
+    }
+
+    if (loading || authLoading) {
         return (
             <div className="flex min-h-screen items-center justify-center">
                 <p className="text-gray-500 font-medium">
@@ -120,13 +137,6 @@ export default function MyLibraryPage() {
             </div>
         );
     }
-
-    if (!hasAccess) return null;
-
-    const learningBooks = firestoreBooks.filter((b) => !b.finished);
-    const finishedBooks = firestoreBooks.filter((b) => b.finished);
-    const currentBooksToDisplay =
-        activeTab === "learning" ? learningBooks : finishedBooks;
 
     return (
         <div className="min-h-screen bg-gray-50 p-6 md:p-12">
@@ -175,7 +185,7 @@ export default function MyLibraryPage() {
                         </button>
                     </div>
                 </header>
-
+                
                 {/* Empty States */}
                 {currentBooksToDisplay.length === 0 ? (
                     <div className="bg-white border border-gray-200 rounded-2xl p-12 text-center shadow-sm">

@@ -9,11 +9,11 @@ import { useAuth } from "@/app/context/AuthContext";
  *  - loading: boolean
  */
 export function useSubscription() {
-  const { user, loading } = useAuth();
+  const { user, authLoading } = useAuth();
 
   return { 
     user,
     subscription: user?.subscribed || "none",
-    loading, 
+    authLoading, 
   };
 }

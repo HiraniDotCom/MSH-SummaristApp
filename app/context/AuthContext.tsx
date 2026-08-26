@@ -16,7 +16,7 @@ type CombinedUser = User & CustomUserFields;
 
 interface AuthContextType {
   user: CombinedUser | null;
-  loading: boolean;
+  authLoading: boolean;
   logout: () => Promise<void>;
 }
 
@@ -24,7 +24,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<CombinedUser | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [authLoading, setAuthLoading] = useState(true);
 
   const logout = async () => {
     try {
@@ -62,14 +62,14 @@ useEffect(() => {
         } else {
           setUser(firebaseUser as CombinedUser);
         }
-        setLoading(false);
+        setAuthLoading(false);
       }, (error) => {
         console.error("Firestore snapshot error:", error);
-        setLoading(false);
+        setAuthLoading(false);
       });
     } else {
       setUser(null);
-      setLoading(false);
+      setAuthLoading(false);
     }
   });
 
@@ -80,7 +80,7 @@ useEffect(() => {
 }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, logout }}>
+    <AuthContext.Provider value={{ user, authLoading, logout }}>
       {children}
     </AuthContext.Provider>
   );

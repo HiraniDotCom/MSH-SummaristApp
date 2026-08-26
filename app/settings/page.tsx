@@ -4,18 +4,19 @@ import { useAuth } from "../context/AuthContext";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
+import Link from "next/link";
 
 export default function SettingsPage() {
-    const { user, loading } = useAuth();
+    const { user, authLoading } = useAuth();
     const pathname = usePathname();
     const router = useRouter();
     const { isOpen } = useSidebar();
 
     const handleLoginClick = () => {
-      router.push("/login")
+        router.push("/login");
     };
 
-    if (loading) {
+    if (authLoading) {
         return (
             <div className="p-6 animate-pulse">
                 <h1 className="text-2xl h-4 font-bold my-4">Settings</h1>
@@ -48,20 +49,24 @@ export default function SettingsPage() {
     return (
         <div>
             {!user?.email ? (
-                <div className="lg:ml-56 w-auto min-h-screen flex flex-col min-w-0">
-  
-  {/* 2. Inner wrapper handles the perfect centering inside the remaining space */}
-  <div className="flex flex-col flex-1 justify-center gap-4 w-full"> 
-    <img className="m-auto" src="/login.png" alt="" /> 
-    <button 
-      onClick={() => handleLoginClick()} 
-      className="bg-blue-500 text-white p-2 rounded-2xl cursor-pointer w-56 animate-pulse m-auto"
-    > 
-      Login 
-    </button> 
-  </div>
-
-</div>
+                <div className=" w-auto max-h-screen flex flex-col min-w-0">
+                    <div className="flex flex-col justify-center gap-4 w-full">
+                        <img
+                            className="mx-auto w-3/4"
+                            src="/login.png"
+                            alt=""
+                        />
+                        <h1 className="text-center font-bold text-3xl">
+                            Log in to see your account information
+                        </h1>
+                        <Link
+                            href="/login"
+                            className="mx-auto bg-blue-500 text-white p-2 rounded-2xl cursor-pointer w-56 animate-pulse flex justify-center items-center"
+                        >
+                            Login
+                        </Link>
+                    </div>
+                </div>
             ) : (
                 <div className="p-6">
                     <h1 className="text-2xl font-bold my-4">Settings</h1>

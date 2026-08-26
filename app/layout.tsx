@@ -28,15 +28,12 @@ export default function RootLayout({
     return (
         <html
             lang="en"
-            className={`${geistSans.variable} ${geistMono.variable}  antialiased`}
+            className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen overflow-x-hidden`}
         >
-            <body className="flex h-screen scrollbar-auto bg-gray-50">
+            <body className="h-screen m-0 p-0 bg-gray-50 overflow-x-hidden">
                 <AuthProvider>
                     <BookProvider>
-                        <TextSizeProvider>
-                            <main className="flex-1 p-6 overflow-y-auto">
-                            {children}</main>
-                        </TextSizeProvider>
+                        <TextSizeProvider>{children}</TextSizeProvider>
                     </BookProvider>
                 </AuthProvider>
             </body>

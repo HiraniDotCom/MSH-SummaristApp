@@ -32,7 +32,7 @@ export default function PlanSelector() {
     );
 
     const router = useRouter();
-    const { user, loading } = useAuth();
+    const { user, authLoading } = useAuth();
     const [selectedPlan, setSelectedPlan] = useState("");
 
     useEffect(() => {
@@ -43,7 +43,7 @@ export default function PlanSelector() {
         }
     }, [user, selectedPlan, plans]);
 
-    if (loading || !user) {
+    if (authLoading || !user) {
         return <>Checking subscription status...</>;
     }
 
@@ -159,7 +159,7 @@ export default function PlanSelector() {
                 }
                 className="px-6 py-3 bg-blue-600 text-white rounded-lg"
             >
-                {loading
+                {authLoading
                     ? "Processing..."
                     : selectedPlan === "Basic"
                       ? "Choose Premium or Premium Plus"

@@ -7,6 +7,7 @@ import "@/app/globals.css";
 import { useSidebar } from "@/app/context/SidebarContext";
 import { useState, useRef, useEffect } from "react";
 import { useBooks } from "@/app/context/BookContext";
+import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
 import AudioDuration from "./AudioDuration";
 
@@ -28,6 +29,12 @@ export default function Header() {
     const containerRef = useRef(null);
     const { open, close } = useSidebar();
     const router = useRouter();
+    const { user } = useAuth();
+    const isAuthenticated = !!user;
+    const handleInputChange = (e) => {
+        if (!isAuthenticated) return;
+        setQuery(e.target.value);
+    };
 
     const debouncedFilter = debounce((searchTerm) => {
         if (!searchTerm.trim()) {
@@ -88,8 +95,11 @@ export default function Header() {
     if (error) return <p className="text-center mt-6 text-red-500">{error}</p>;
 
     return (
-        <div className="max-w-full mx-auto p-2 relative" ref={containerRef}>
-            <div className="flex flex-1 lg:ml-56">
+        <div
+            className="max-w-full border-b border-gray-300 p-2 relative"
+            ref={containerRef}
+        >
+            <div className="flex flex-1 ">
                 <button
                     onClick={() => router.back()}
                     className="flex items-center p-2 rounded-xl text-gray-600 hover:text-black hover:bg-gray-100 transition-all cursor-pointer shrink-0"
@@ -98,80 +108,95 @@ export default function Header() {
                     <MdArrowBackIosNew className="h-5 w-5" />
                     Go Back
                 </button>
-                <div className="flex relative max-w-md ml-auto">
-                    {/* Search Input */}
-                    <button className="lg:hidden ml-2" onClick={open}>
-                        <MdOutlineMenu className="h-6 w-6" />
-                    </button>
-                    <input
-                        type="text"
-                        placeholder="Search for a book..."
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        className="w-full bg-gray-200 px-4 py-2 text-gray-600 border border-gray-400 rounded-lg focus:outline-none focus:ring focus:ring-blue-400"
-                    />
-                    {query.length > 0 ? (
+                <div className="flex flex-col relative w-full max-w-lg ml-auto mr-5">
+                    {/* Search Input Bar */}
+                    <div className="flex items-center relative w-full has-:disabled:opacity-60 transition-opacity">
                         <button
-                            type="button"
-                            onClick={() => {
-                                setQuery("");
-                                setFilteredBooks([]);
-                                setIsOpen(false);
-                            }}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-600"
+                            className="lg:hidden mr-2 shrink-0"
+                            onClick={open}
                         >
-                            ✕
+                            <MdOutlineMenu className="h-6 w-6" />
                         </button>
-                    ) : (
-                        <HiMagnifyingGlass className="inline absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-600" />
+
+                        <div className="relative w-full">
+                            <input
+                                type="text"
+                                placeholder={
+                                    isAuthenticated
+                                        ? "Search for a book..."
+                                        : "Sign in to search for books..."
+                                }
+                                value={isAuthenticated ? query : ""}
+                                onChange={handleInputChange}
+                                disabled={!isAuthenticated}
+                                className="w-full bg-gray-200 pl-4 pr-10 py-2 text-gray-600 border border-gray-400 rounded-lg focus:outline-none focus:ring focus:ring-blue-400 disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300 disabled:cursor-not-allowed"
+                            />
+
+                            {isAuthenticated &&
+                                (query.length > 0 ? (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setQuery("");
+                                            setFilteredBooks([]);
+                                            setIsOpen(false);
+                                        }}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-600"
+                                    >
+                                        ✕
+                                    </button>
+                                ) : (
+                                    <HiMagnifyingGlass className="inline absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-600" />
+                                ))}
+                        </div>
+                    </div>
+
+                    {/* Dropdown Overlay */}
+                    {isOpen && filteredBooks.length > 0 && (
+                        <div className="absolute w-100  right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
+                            {filteredBooks.map((book, idx) => (
+                                <div
+                                    key={book.id}
+                                    className={`flex px-4 py-2 items-center cursor-pointer border-b border-gray-300 ${
+                                        idx === activeIndex
+                                            ? "bg-blue-100"
+                                            : "hover:bg-gray-100"
+                                    }`}
+                                    onClick={() => handleBookClick(book.id)}
+                                >
+                                    <div>
+                                        <img
+                                            src={book.imageLink}
+                                            className="max-w-25 p-2"
+                                        />
+                                    </div>
+                                    <div className="flex-1 items-center">
+                                        <div className="font-semibold">
+                                            {book.title}
+                                        </div>
+                                        <div className="text-sm text-gray-500">
+                                            By: {book.author}
+                                        </div>
+                                        <div className="text-sm">
+                                            <FiClock className="inline" />{" "}
+                                            <AudioDuration
+                                                audioUrl={book.audioLink}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* No results */}
+                    {isOpen && filteredBooks.length === 0 && query.trim() && (
+                        <div className="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-4 text-gray-500 z-50">
+                            No books found.
+                        </div>
                     )}
                 </div>
             </div>
-            <div className="border-b-2 border-gray-200 w-full lg:ml-56 my-4"></div>
-
-            {/* Dropdown Overlay */}
-            {isOpen && filteredBooks.length > 0 && (
-                <div className="absolute w-100  right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
-                    {filteredBooks.map((book, idx) => (
-                        <div
-                            key={book.id}
-                            className={`flex px-4 py-2 items-center cursor-pointer border-b border-gray-300 ${
-                                idx === activeIndex
-                                    ? "bg-blue-100"
-                                    : "hover:bg-gray-100"
-                            }`}
-                            onClick={() => handleBookClick(book.id)}
-                        >
-                            <div>
-                                <img
-                                    src={book.imageLink}
-                                    className="max-w-25 p-2"
-                                />
-                            </div>
-                            <div className="flex-1 items-center">
-                                <div className="font-semibold">
-                                    {book.title}
-                                </div>
-                                <div className="text-sm text-gray-500">
-                                    By: {book.author}
-                                </div>
-                                <div className="text-sm">
-                                    <FiClock className="inline" />{" "}
-                                    <AudioDuration audioUrl={book.audioLink} />
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
-
-            {/* No results */}
-            {isOpen && filteredBooks.length === 0 && query.trim() && (
-                <div className="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-4 text-gray-500 z-50">
-                    No books found.
-                </div>
-            )}
-            {/* </div> */}
         </div>
     );
 }

@@ -5,6 +5,7 @@ import "@/app/globals.css";
 import Sidebar from "@/app/components/Sidebar";
 import Header from "@/app/components/Header";
 import { SidebarProvider, useSidebar } from "../context/SidebarContext";
+import { AuthProvider } from "../context/AuthContext";
 import clsx from "clsx";
 
 const robotoSans = Roboto({
@@ -21,21 +22,25 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     const { isOpen } = useSidebar();
 
     return (
-        <div className="flex min-h-screen">
+        <div className="flex min-h-screen w-full bg-gray-50">
+            {/* Sidebar */}
             <Sidebar />
 
+            {/* Main content wrapper */}
             <div
                 className={clsx(
-                    "flex flex-col flex-1 transition-all duration-300",
-                    isOpen ? "ml-56" : "ml-0",
+                    "flex flex-col flex-1 min-w-0 min-h-screen transition-all duration-300",
+                    "lg:pl-56",
+                    isOpen ? "pl-56 lg:pl-56" : "pl-0",
                 )}
             >
-                <div>
-                    <Header />
-                    <main className="flex-1 overflow-y-auto p-4 lg:ml-56">
-                        {children}
-                    </main>
-                </div>
+                {/* Header */}
+                <Header />
+
+                {/* Scrollable content container */}
+                <main className="w-full max-w-full p-4 h-auto">
+                    {children}
+                </main>
             </div>
         </div>
     );
@@ -44,7 +49,9 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <SidebarProvider>
+            <AuthProvider>
                 <LayoutContent>{children}</LayoutContent>
+            </AuthProvider>
         </SidebarProvider>
     );
 }

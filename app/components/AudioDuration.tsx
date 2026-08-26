@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 
 interface AudioDurationProps {
-  audioUrl: string;
+  audioUrl: string | undefined;
 }
 
 export default function AudioDuration({ audioUrl }: AudioDurationProps) {

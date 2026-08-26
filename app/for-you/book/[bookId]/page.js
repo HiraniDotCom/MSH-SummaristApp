@@ -5,6 +5,7 @@ import { useAuth } from "@/app/context/AuthContext";
 import { MdBookmarkBorder, MdOutlineStarBorder } from "react-icons/md";
 import { FiClock, FiMic } from "react-icons/fi";
 import { HiOutlineLightBulb } from "react-icons/hi";
+import { LuBookOpenText } from "react-icons/lu";
 import { useParams } from "next/navigation";
 import { useSidebar } from "../../../context/SidebarContext";
 import clsx from "clsx";
@@ -12,6 +13,7 @@ import AddToLibrary from "@/app/components/AddToLibrary";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 import AudioDuration from "@/app/components/AudioDuration";
+import StringToParagraph from "@/app/components/StringToParagraph";
 
 export default function BookPage() {
     const { isOpen } = useSidebar();
@@ -19,7 +21,7 @@ export default function BookPage() {
     const { bookId } = params;
     const router = useRouter();
 
-    const { user, loading: authLoading } = useAuth();
+    const { user, authLoading } = useAuth();
     const {
         selectedBook,
         recommendedBooks,
@@ -40,7 +42,9 @@ export default function BookPage() {
 
     useEffect(() => {
         if (!isPageLoading && !proAccess) {
-            router.push(`/choose-plan?redirectTo=${encodeURIComponent(pathname)}`);
+            router.push(
+                `/choose-plan?redirectTo=${encodeURIComponent(pathname)}`,
+            );
         }
     }, [proAccess, router, isPageLoading]);
 
@@ -127,50 +131,48 @@ export default function BookPage() {
                             <h2 className="mb-4 font-bold text">
                                 {book.author}
                             </h2>
-                            <h3 className="mb-4 font-medium text-2xl">
+                            <h3 className="mb-4 font-light text-gray-800 text-xl">
                                 {book.subTitle}
                             </h3>
-                            <div className="border-t-2 border-gray-200 h-1">
-                                <br />
+                            <div className="border-y-2 border-gray-200 py-4 mb-6 ">
+                                <div className="grid md:grid-cols-2 md:grid-rows-2 w-2/3 gap-4 text-left font-bold text-sm">
+                                    <div>
+                                        <MdOutlineStarBorder className="inline" />{" "}
+                                        {book.averageRating} ({book.totalRating}{" "}
+                                        ratings)
+                                    </div>
+                                    <div>
+                                        <FiClock className="inline" />{" "}
+                                        <AudioDuration
+                                            audioUrl={book.audioLink}
+                                        />
+                                    </div>
+                                    <div>
+                                        <FiMic className="inline" /> {book.type}
+                                    </div>
+                                    <div>
+                                        <HiOutlineLightBulb className="inline" />{" "}
+                                        {book.keyIdeas} Key Ideas
+                                    </div>
+                                </div>
                             </div>
-                            <div className="grid grid-cols-2 grid-rows-2 gap-4 text-left mt-4 mb-4 font-bold text-sm">
-                                <div>
-                                    <MdOutlineStarBorder className="inline" />{" "}
-                                    {book.averageRating} ({book.totalRating}{" "}
-                                    ratings)
-                                </div>
-                                <div>
-                                    <FiClock className="inline" />{" "}
-                                    <AudioDuration audioUrl={book.audioLink} />
-                                </div>
-                                <div>
-                                    <FiMic className="inline" /> {book.type}
-                                </div>
-                                <div>
-                                    <HiOutlineLightBulb className="inline" />{" "}
-                                    {book.keyIdeas} Key Ideas
-                                </div>
-                            </div>
-                            <div className="border-t-2 border-gray-200 h-1 mb-4">
-                                <br />
-                            </div>
-                            <div>
+                            <div className="flex justify-start">
                                 <button
                                     onClick={() => handleBookClick(bookId)}
-                                    className="bg-black text-white p-4 m-auto rounded-2xl w-30 mr-4"
+                                    className="bg-black text-white rounded-lg w-30 mr-2 hover:cursor-pointer"
                                 >
-                                    {" "}
+                                    <LuBookOpenText className="inline mr-2 text-2xl" />{" "}
                                     Read{" "}
                                 </button>{" "}
                                 <button
                                     onClick={() => handleBookClick(bookId)}
-                                    className="bg-black text-white p-4 m-auto rounded-2xl w-30 ml-4"
+                                    className="bg-black text-white rounded-lg w-30 ml-2 py-2 hover:cursor-pointer"
                                 >
-                                    {" "}
+                                    <FiMic className="inline mr-2 text-2xl" />{" "}
                                     Listen{" "}
                                 </button>
                             </div>
-                            <div className="pt-4 pb-4 font-bold text-blue-500">
+                            <div className="py-4 font-bold w-64">
                                 <div className="mt-2 bg-blue-500 text-white px-3 py-1 rounded">
                                     <MdBookmarkBorder className="inline" />
                                     <AddToLibrary book={book} />
@@ -187,14 +189,20 @@ export default function BookPage() {
                                     </div>
                                 ))}
                             </div>
-                            <p>{book.summary}</p>
+                            <div>
+                                <StringToParagraph text={book.summary} />
+                            </div>
 
                             <h4 className="pt-5 pb-2 font-semibold ">
                                 {" "}
                                 About the author
                             </h4>
 
-                            <p>{book.authorDescription}</p>
+                            <div>
+                                <StringToParagraph
+                                    text={book.authorDescription}
+                                />
+                            </div>
                         </div>
                         <div className="basis-1/4">
                             <img
