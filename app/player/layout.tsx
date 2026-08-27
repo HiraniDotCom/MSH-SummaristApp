@@ -1,43 +1,34 @@
 "use client";
 
-import { Roboto, Roboto_Condensed } from "next/font/google";
 import "@/app/globals.css";
 import Sidebar from "@/app/components/Sidebar";
 import Header from "@/app/components/Header";
-import { SidebarProvider, useSidebar } from "../context/SidebarContext";
-import { TextSizeProvider } from "../context/TextSizeContext";
-import Player from '@/app/components/Player';
+import { SidebarProvider, useSidebar } from "@/app/context/SidebarContext";
+import { TextSizeProvider } from "@/app/context/TextSizeContext";
+import Player from "@/app/components/Player";
 import clsx from "clsx";
-
-const robotoSans = Roboto({
-    variable: "--font-robot-sans",
-    subsets: ["latin"],
-});
-
-const robotoCondensed = Roboto_Condensed({
-    variable: "--font-roboto_condensed",
-    subsets: ["latin"],
-});
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
     const { isOpen } = useSidebar();
 
     return (
-        <div className="flex min-h-screen">
+        <div className="flex min-h-screen w-full bg-gray-50">
+            {/* Sidebar */}
             <Sidebar />
+
+            {/* Main content wrapper */}
             <div
                 className={clsx(
-                    "flex flex-col flex-1 transition-all duration-300",
-                    isOpen ? "ml-56" : "ml-0",
+                    "flex flex-col flex-1 min-w-0 min-h-screen transition-all duration-300",
+                    "lg:pl-56",
+                    isOpen ? "pl-56 lg:pl-56" : "pl-0",
                 )}
             >
-                <div>
-                    {/* Header */}
-                    <Header />
-                    <main className="flex-1 overflow-y-auto p-4 lg:ml-56">
-                        {children}
-                    </main>
-                </div>
+                {/* Header */}
+                <Header />
+
+                {/* Scrollable content container */}
+                <main className="w-full max-w-full p-4 h-auto">{children}</main>
             </div>
         </div>
     );

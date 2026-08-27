@@ -1,9 +1,9 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useTextSize } from "../../context/TextSizeContext";
+import { useTextSize } from "@/app/context/TextSizeContext";
 import { useBooks } from "@/app/context/BookContext";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "@/app/context/AuthContext";
 import { db } from "@/app/lib/firebase";
 import {
     collection,
@@ -16,7 +16,7 @@ import {
 import { useState } from "react";
 import { FiCheckCircle } from "react-icons/fi";
 import PlayerSkeleton from "@/app/components/PlayerSkeleton";
-import StringToParagraphFull from '@/app/components/StringToParagraphFull';
+import StringToParagraphFull from "@/app/components/StringToParagraphFull";
 
 export default function PlayerPage() {
     const { textSize } = useTextSize();
@@ -38,7 +38,7 @@ export default function PlayerPage() {
             : currentSelected?.id === bookId
               ? currentSelected
               : null);
-    
+
     const handleMarkAsFinished = async () => {
         if (!user || !user.email) return alert("You must be signed in.");
 
@@ -80,7 +80,6 @@ export default function PlayerPage() {
         return <PlayerSkeleton />;
     }
 
-
     return (
         <div className="min-h-screen bg-white pb-24">
             <div className="max-w-3xl m-auto p-6">
@@ -99,7 +98,7 @@ export default function PlayerPage() {
                 <div className="border-b border-gray-200 mb-6"></div>
 
                 {/* Content Paragraph Block Rendering */}
-                <div>
+                <div className={textSize}>
                     <StringToParagraphFull text={book.summary} />
                 </div>
             </div>
