@@ -1,22 +1,11 @@
 "use client";
-import { Roboto, Roboto_Condensed } from "next/font/google";
+
 import "@/app/globals.css";
 import Sidebar from "@/app/components/Sidebar";
 import Header from "@/app/components/Header";
 import { SidebarProvider, useSidebar } from "../context/SidebarContext";
 import clsx from "clsx";
 import { AuthProvider } from "@/app/context/AuthContext";
-
-const robotoSans = Roboto({
-    variable: "--font-robot-sans",
-    subsets: ["latin"],
-    weight: ["400", "700"],
-});
-const robotoCondensed = Roboto_Condensed({
-    variable: "--font-roboto_condensed",
-    subsets: ["latin"],
-    weight: ["400", "700"],
-});
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
     const { isOpen } = useSidebar();

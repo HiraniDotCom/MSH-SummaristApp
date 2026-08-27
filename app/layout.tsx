@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Roboto, Roboto_Condensed } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./context/AuthContext";
 import { BookProvider } from "../app/context/BookContext";
 import { TextSizeProvider } from "./context/TextSizeContext";
 
-const geistSans = Geist({
-    variable: "--font-geist-sans",
+const robotoSans = Roboto({
+    variable: "--font-robot-sans",
     subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-    variable: "--font-geist-mono",
+const robotoCondensed = Roboto_Condensed({
+    variable: "--font-roboto_condensed",
     subsets: ["latin"],
 });
 
@@ -28,7 +28,7 @@ export default function RootLayout({
     return (
         <html
             lang="en"
-            className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen overflow-x-hidden`}
+            className={`${robotoSans.variable} ${robotoCondensed.variable} antialiased h-screen overflow-x-hidden`}
         >
             <body className="h-screen m-0 p-0 bg-gray-50 overflow-x-hidden">
                 <AuthProvider>

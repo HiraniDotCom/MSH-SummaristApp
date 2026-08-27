@@ -129,7 +129,7 @@ export default function BookCarousel({
             <div
                 ref={carouselRef}
                 onScroll={() => updateButtonVisibility(null)}
-                className="grid grid-flow-col auto-cols-[calc(100%)] sm:auto-cols-[calc(50%-12px)] md:auto-cols-[calc(33.33%-16px)] lg:auto-cols-[calc(25%-18px)] gap-6 overflow-x-auto pb-4 scrollbar-none snap-x snap-mandatory scroll-smooth"
+                className="grid grid-flow-col auto-cols-[calc(100%)] sm:auto-cols-[calc(50%-12px)] md:auto-cols-[calc(33.33%-16px)] lg:auto-cols-[calc(25%-18px)] xl:auto-cols-[calc(20%-18px)] gap-6 overflow-x-auto pb-4 scrollbar-none snap-x snap-mandatory scroll-smooth"
             >
                 {books.map((book) => {
                     const requiresPremium =
@@ -174,7 +174,7 @@ export default function BookCarousel({
                             className={`border border-gray-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all flex overflow-hidden snap-start shrink-0 ${
                                 title === "Selected Just For You"
                                     ? "flex-col md:flex-row gap-4 w-full md:min-w-130 sm:max-w-90 bg-amber-200 items-center"
-                                    : "flex-col justify-between h-95 w-full"
+                                    : "flex-col justify-between w-full"
                             }`}
                         >
                             {title === "Selected Just For You" ? (
@@ -231,9 +231,9 @@ export default function BookCarousel({
                             ) : (
                                 <>
                                     {title !== "Selected Just For You" ? (
-                                        <div className="flex flex-col gap-3 h-full justify-center w-full">
-                                            <div>
-                                                <div className="h-3 w-full flex items-center justify-end">
+                                        <div className="flex flex-col w-full">
+                                            <div className="m-auto text-center">
+                                                <div className="w-full flex items-center justify-end">
                                                     {requiresPremium && (
                                                         <span className="text-[8px] bg-black text-white font-normal uppercase p-1 rounded-md">
                                                             Premium
@@ -241,7 +241,7 @@ export default function BookCarousel({
                                                     )}
                                                 </div>
                                                 {book.imageLink && (
-                                                    <div className="w-full rounded-xl overflow-hidden m-auto relative">
+                                                    <div className=" flex justify-around md:text-left w-full rounded-xl overflow-hidden m-auto relative">
                                                         <img
                                                             src={book.imageLink}
                                                             alt={book.title}
@@ -260,7 +260,7 @@ export default function BookCarousel({
                                                         {book.subTitle}
                                                     </p>
                                                 </div>
-                                            <div className="flex flex-col gap-1 text-xs font-semibold text-gray-600 mt-1">
+                                            <div className="flex justify-center gap-1 text-xs font-semibold m-auto text-gray-600 mt-1">
                                                 <div className="flex items-center gap-4 text-gray-600">
                                                     <div className="flex items-center">
                                                         <MdOutlineStarBorder className="mr-1 text-base" />

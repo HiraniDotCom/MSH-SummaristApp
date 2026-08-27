@@ -107,7 +107,7 @@ export default function SettingsPage() {
                                     className="bg-blue-400 rounded-full p-2 text-white ml-4"
                                     href={`/choose-plan?redirectTo=${encodeURIComponent(pathname)}`}
                                 >
-                                    Upgrade my plan
+                                    Upgrade your plan
                                 </a>
                             </div>
                         )}

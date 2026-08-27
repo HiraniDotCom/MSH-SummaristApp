@@ -14,18 +14,21 @@ export default function PlanSelector() {
                 name: "Premium Plus",
                 price: "$99.99/year",
                 description: "Includes 7-day free trial",
+                stripePriceId: "price_1U4OBcRtHSQGyQeiSpUq2rJD",
             },
             {
                 id: "Premium",
                 name: "Premium",
                 price: "$9.99/month",
                 description: "No trial period",
+                stripePriceId: "price_1U4ODERtHSQGyQeibig9Zfem",
             },
             {
                 id: "Basic",
                 name: "Basic",
                 price: "Free",
                 description: "Restricted access",
+                stripePriceId: null,
             },
         ],
         [],
@@ -34,6 +37,7 @@ export default function PlanSelector() {
     const router = useRouter();
     const { user, authLoading } = useAuth();
     const [selectedPlan, setSelectedPlan] = useState("");
+    const [stripeLoading, setStripeLoading] = useState(false);
 
     useEffect(() => {
         if (user?.subscribed && !selectedPlan) {
@@ -58,34 +62,85 @@ export default function PlanSelector() {
             return;
         }
 
+        setStripeLoading(true);
+
         try {
-            const userRef = doc(db, "users", user.uid);
+            // SCENARIO 1: User selected their active current plan -> Open Stripe Billing Management Portal
+            if (selectedPlan === user.subscribed && user.stripeCustomerId) {
+                const res = await fetch("/api/portal", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        userId: user.uid,
+                        stripeCustomerId: user.stripeCustomerId,
+                    }),
+                });
+                const data = await res.json();
+                if (data.url) {
+                    window.location.href = data.url;
+                } else {
+                    console.error("Portal error:", data.error);
+                }
+                return;
+            }
 
-            await setDoc(
-                userRef,
-                {
-                    subscribed: selectedPlan,
-                    subscriptionUpdatedAt: new Date().toISOString(),
-                    displayName: user.displayName || "",
-                },
-                { merge: true },
-            );
+            // SCENARIO 2: User downgraded or manually selected the Free Basic plan
+            if (selectedPlan === "Basic") {
+                const userRef = doc(db, "users", user.uid);
+                await setDoc(
+                    userRef,
+                    {
+                        subscribed: "Basic",
+                        subscriptionUpdatedAt: new Date().toISOString(),
+                        displayName: user.displayName || "",
+                    },
+                    { merge: true },
+                );
+                router.push("/for-you");
+                return;
+            }
 
-            const previousPage = document.referrer;
+            // SCENARIO 3: User selected a paid premium subscription tier -> Redirect to Stripe Checkout Session
+            const targetPlan = plans.find((p) => p.id === selectedPlan);
+            if (!targetPlan?.stripePriceId) return;
 
-            if (previousPage && previousPage.includes(window.location.origin)) {
-                router.push(previousPage);
+            const res = await fetch("/api/checkout", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    priceId: targetPlan.stripePriceId,
+                    userId: user.uid,
+                    email: user.email,
+                }),
+            });
+
+            const data = await res.json();
+            if (data.url) {
+                window.location.href = data.url;
             } else {
-                router.push("/");
+                console.error("Checkout link processing failed:", data.error);
             }
         } catch (error) {
-            console.error("Error updating subscription:", error);
+            console.error("Error setting up payment workflow session:", error);
+        } finally {
+            setStripeLoading(false);
         }
     };
 
     const handleChange = (id) => {
         setSelectedPlan(id);
     };
+
+    // Determine the text labels on your dynamic submission buttons
+    const getButtonText = () => {
+        if (stripeLoading) return "Redirecting Securely...";
+        if (selectedPlan === user.subscribed && selectedPlan !== "Basic") return "Manage Billing & Subscription";
+        if (selectedPlan === "Basic") return "Downgrade to Free Basic Tier";
+        if (selectedPlan === "Premium") return "Start your first month";
+        return "Start your 7-day free trial";
+    };
+
+    const isActionDisabled = stripeLoading || !selectedPlan;
 
     return (
         <div className="w-125 space-y-4 mt-8">
@@ -152,28 +207,17 @@ export default function PlanSelector() {
             </div>
             <button
                 onClick={confirmPlanSelection}
-                disabled={
-                    !selectedPlan ||
-                    plans.find((p) => p.name === user.subscribed)?.id ===
-                        selectedPlan
-                }
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg"
+                disabled={isActionDisabled}
+                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
             >
-                {authLoading
-                    ? "Processing..."
-                    : selectedPlan === "Basic"
-                      ? "Choose Premium or Premium Plus"
-                      : selectedPlan === "Premium"
-                        ? "Start your first month"
-                        : "Start your 7-day free trial"}
+                {getButtonText()}
             </button>
-            {/* Info message */}
-            <p className="mt-2 text-sm text-gray-600">
-                {selectedPlan === "Basic"
-                    ? ""
-                    : selectedPlan === "Premium"
-                      ? "30-day money back guarantee, no questions asked."
-                      : "Cancel your trial at any time before it ends, and you won’t be charged."}
+
+            {/* Sub-text information helpers */}
+            <p className="mt-2 text-sm text-gray-600 min-h-[20px]">
+                {selectedPlan === "Basic" ? "Free tier gives you access to open collections only." : 
+                 selectedPlan === "Premium" ? "30-day money back guarantee, no questions asked." : 
+                 selectedPlan === "Premium Plus" ? "Cancel your trial at any time before it ends, and you won’t be charged." : ""}
             </p>
         </div>
     );

@@ -2,9 +2,8 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
 const secretKey = process.env.STRIPE_SECRET_KEY || "";
-
 const stripe = new Stripe(secretKey, {
-    apiVersion: "2026-07-29.dahlia",
+    apiVersion: "2026-07-29.dahlia", // Maintains your specific Stripe API version lock
 });
 
 export async function POST(request: Request) {
@@ -20,7 +19,14 @@ export async function POST(request: Request) {
         }
 
         const body = await request.json();
-        const { priceId, redirectTo, userEmail } = body;
+
+        // 1. Destructure parameter variations gracefully
+        const priceId = body.priceId;
+        const userEmail = body.userEmail || body.email; // Fallback for 'email' from PlanSelector
+        const userId = body.userId; // Essential for Firestore Webhook lookup tracking
+        const redirectTo = body.redirectTo
+            ? decodeURIComponent(body.redirectTo)
+            : "/for-you";
 
         if (!priceId || priceId === "Basic" || priceId === "undefined") {
             return NextResponse.json(
@@ -36,9 +42,13 @@ export async function POST(request: Request) {
             );
         }
 
+        // 2. Build the session incorporating client routing targets & user metadata tags
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
             mode: "subscription",
+            managed_payments: {
+                enabled: false,
+            },
             line_items: [
                 {
                     price: priceId,
@@ -46,7 +56,12 @@ export async function POST(request: Request) {
                 },
             ],
             customer_email: userEmail,
-            success_url: `${request.headers.get("origin")}${decodeURIComponent(redirectTo)}`,
+            // 💡 CRITICAL STEP: Metadata attaches the Firestore UID to the Stripe transaction record
+            // so your webhook file can target users/{userId} correctly.
+            metadata: {
+                userId: userId || "",
+            },
+            success_url: `${request.headers.get("origin")}${redirectTo}`,
             cancel_url: `${request.headers.get("origin")}/choose-plan`,
         });
 
