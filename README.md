@@ -1,13 +1,13 @@
 # Summarist App 
 
-Solo Internship Project - challenge was to update a basic HTML/CSS landing page into an app that routes to sigin/up logic page, selection of preselected online books, leading to premium content description and reader, audio-player according to user chosen subscription profile post payment completion with a sidebar router
+Solo Internship Project - challenge was to update a basic HTML/CSS landing page into an app that routes to signin/up logic page, selection of preselected online books, leading to premium content description and reader, audio-player according to user chosen subscription profile post payment completion with a sidebar router
 
 
 ---
 
 ## 🚀 Features
 
-* **Authication & Subscription Status:** Options to sign in / up using password/google plus a guest access logiin.
+* **Authentication & Subscription Status:** Options to sign in / up using password/google plus a guest access login.
 * **Online Book Selections:** User has option to visit a preselected book, or peruse a set of recommended or suggested book titles, most of which are behind a Pro or Premium subscription.
 * **User Subscription Options:** If user wishes to visit the Pro & Premium selections, they are routed to the Choose Plan page where they can choose a monthly or annual plan and follow the payment process.
 * **Pro & Premium Services:** Once subcription is validated, user gets to view the paid content and read the chosen title or listen to the book via an online player. They have an option to store their to-read & finished titles in their library (stored in Firebase)
